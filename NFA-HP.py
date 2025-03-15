@@ -66,51 +66,56 @@ nfa.set_start_state("start")
 for i in range(9): # 0 to 8
     nfa.add_transition("start", i + 1, "dec")
 
-nfa.add_transition("dec", "_", "_")
+nfa.add_transition("dec", "_", "_dec")
 
 for i in range(10): # 0 to 9
     nfa.add_transition("dec", i, "dec")
-    nfa.add_transition("_", i, "dec")
+    nfa.add_transition("_dec", i, "dec")
 
 # Octals/Hex/Zeroes
 nfa.add_transition("start", 0, "0")
 
 # Octals
 nfa.add_transition("0", "o", "oct")
+nfa.add_transition("0", "O", "oct")
 
 for i in range(8): # 0 to 7
     nfa.add_transition("oct", i, "digit")
     nfa.add_transition("digit", i, "digit")
-    nfa.add_transition("digit", i, "_")
-    nfa.add_transition("_", i, "digit")
+    nfa.add_transition("digit", i, "_oct")
+    nfa.add_transition("_oct", i, "digit")
 
-nfa.add_transition("oct", "_", "_")
-nfa.add_transition("digit", "_", "_")
+nfa.add_transition("oct", "_", "_oct")
+nfa.add_transition("digit", "_", "_oct")
 
 #Hexadecimals
 nfa.add_transition("0", "x", "hex")
+nfa.add_transition("0", "X", "hex")
 
 for i in range(10): # 0 to 9
     nfa.add_transition("hex", i, "digit")
     nfa.add_transition("digit", i, "digit")
-    nfa.add_transition("_", i, "digit")
+    nfa.add_transition("_hex", i, "digit")
 
-for char in string.ascii_lowercase:  # Contains "abcdefghijklmnopqrstuvwxyz"
+for char in string.ascii_lowercase[:6]:  # "abcdef"
     nfa.add_transition("hex", char, "digit")
     nfa.add_transition("digit", char, "digit")
-    nfa.add_transition("_", char, "digit")
+    nfa.add_transition("_hex", char, "digit")
 
-for char in string.ascii_uppercase:  # Contains "ABDEFGHIJKLMNOPQRSTUVWXYZ"
+for char in string.ascii_uppercase[:6]:  # "ABCDEF"
     nfa.add_transition("hex", char, "digit")
     nfa.add_transition("digit", char, "digit")
-    nfa.add_transition("_", char, "digit")
+    nfa.add_transition("_hex", char, "digit")
 
-nfa.add_transition("hex", "_", "_")
-nfa.add_transition("digit", "_", "_")
+nfa.add_transition("hex", "_", "_hex")
+nfa.add_transition("digit", "_", "_hex")
 
 # Zeroes
 nfa.add_transition("0", 0, "00")
 nfa.add_transition("00", 0, "00")
+nfa.add_transition("0", "_", "_00")
+nfa.add_transition("00", "_", "_00")
+nfa.add_transition("_00", 0, "00")
 
 # Set accept state(s)
 nfa.set_accept_state("dec")
@@ -119,7 +124,8 @@ nfa.set_accept_state("00")
 nfa.set_accept_state("0")
 
 # Test strings
-test_strings = ["123", "0", "0x123ABC", "0o013", "0x1_2_3", "0o7_7_7", "00000", "Supercalifragilisticexpialidocious"]
+test_strings = ["1","1234567890","0","000","3_141_592","1_6_1_8_0_3_3_9","00_00","0o1","0O2","0o1234567","0o_555",
+"0o5_55","0o0","0o0000","0o0043","0x1","0X2","0x1234567890abcdef","0x1234567890ABCDEF", "0x1_2_a_b","0x_1_2_a_b","0x0","0x00","0x00ab"]
 for s in test_strings:
     result = "Accepted" if nfa.is_accepted(s) else "Rejected"
     print(f"String '{s}': {result}")
