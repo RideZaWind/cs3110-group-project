@@ -80,35 +80,35 @@ nfa.add_transition("0", "o", "oct")
 nfa.add_transition("0", "O", "oct")
 
 for i in range(8): # 0 to 7
-    nfa.add_transition("oct", i, "digit")
-    nfa.add_transition("digit", i, "digit")
-    nfa.add_transition("digit", i, "_oct")
-    nfa.add_transition("_oct", i, "digit")
+    nfa.add_transition("oct", i, "digitOct")
+    nfa.add_transition("digitOct", i, "digitOct")
+    nfa.add_transition("digitOct", i, "_oct")
+    nfa.add_transition("_oct", i, "digitOct")
 
 nfa.add_transition("oct", "_", "_oct")
-nfa.add_transition("digit", "_", "_oct")
+nfa.add_transition("digitOct", "_", "_oct")
 
 #Hexadecimals
 nfa.add_transition("0", "x", "hex")
 nfa.add_transition("0", "X", "hex")
 
 for i in range(10): # 0 to 9
-    nfa.add_transition("hex", i, "digit")
-    nfa.add_transition("digit", i, "digit")
-    nfa.add_transition("_hex", i, "digit")
+    nfa.add_transition("hex", i, "digitHex")
+    nfa.add_transition("digitHex", i, "digitHex")
+    nfa.add_transition("_hex", i, "digitHex")
 
 for char in string.ascii_lowercase[:6]:  # "abcdef"
-    nfa.add_transition("hex", char, "digit")
-    nfa.add_transition("digit", char, "digit")
-    nfa.add_transition("_hex", char, "digit")
+    nfa.add_transition("hex", char, "digitHex")
+    nfa.add_transition("digitHex", char, "digitHex")
+    nfa.add_transition("_hex", char, "digitHex")
 
 for char in string.ascii_uppercase[:6]:  # "ABCDEF"
-    nfa.add_transition("hex", char, "digit")
-    nfa.add_transition("digit", char, "digit")
-    nfa.add_transition("_hex", char, "digit")
+    nfa.add_transition("hex", char, "digitHex")
+    nfa.add_transition("digitHex", char, "digitHex")
+    nfa.add_transition("_hex", char, "digitHex")
 
 nfa.add_transition("hex", "_", "_hex")
-nfa.add_transition("digit", "_", "_hex")
+nfa.add_transition("digitHex", "_", "_hex")
 
 # Zeroes
 nfa.add_transition("0", 0, "00")
@@ -119,14 +119,16 @@ nfa.add_transition("_00", 0, "00")
 
 # Set accept state(s)
 nfa.set_accept_state("dec")
-nfa.set_accept_state("digit")
+nfa.set_accept_state("digitHex")
+nfa.set_accept_state("digitOct")
 nfa.set_accept_state("00")
 nfa.set_accept_state("0")
 
 # Test strings
-test_strings = ["1","1234567890","0","000","3_141_592","1_6_1_8_0_3_3_9","00_00","0o1","0O2","0o1234567","0o_555",
-"0o5_55","0o0","0o0000","0o0043","0x1","0X2","0x1234567890abcdef","0x1234567890ABCDEF", "0x1_2_a_b","0x_1_2_a_b","0x0","0x00","0x00ab",
-"01","0012","_123","456_","7_89_","1__35","0o8","0o123456789","0xabcdefg","0XABCDEFG","0_o1234","0_xabcd","0o__1234","0x__abcd","00__00"]
+with open("in.txt", "r") as file:
+    test_strings = file.readlines()
+    test_strings = [string.strip() for string in test_strings]
+
 for s in test_strings:
     result = "Accepted" if nfa.is_accepted(s) else "Rejected"
     print(f"String '{s}': {result}")
