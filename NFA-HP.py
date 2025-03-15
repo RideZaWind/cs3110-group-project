@@ -11,7 +11,7 @@ class NFA:
 
     # every time transition is accessed with non-existant key, it will now automatically make one
     def add_transition(self, fromState, symbol, toState):
-        self.transitions[fromState][symbol].add(toState)
+        self.transitions[fromState][str(symbol)].add(toState)
 
     def set_start_state(self, state):
         self.start_state = state
@@ -51,3 +51,34 @@ class NFA:
         # if any of the current state meets the accept state, then it is accepted, return true
         # bool will check if the set is empty or not. the & operation will return a set with intersection between the two sets
         return bool(currentStates & self.accept_states)
+
+
+
+
+
+# MAIN
+nfa = NFA()
+nfa.set_start_state(0)
+
+# Adding transitions
+for i in range(9): # 0 to 8
+    nfa.add_transition(0, i + 1, 1)
+
+for i in range(10): # 0 to 9
+    nfa.add_transition(1, i, 1)
+    nfa.add_transition(2, i, 1)
+
+nfa.add_transition(1, "_", 2)
+nfa.add_transition(0, 0, 3)
+nfa.add_transition(3, 0, 3)
+
+# Set accept state(s)
+nfa.set_accept_state(1)
+nfa.set_accept_state(2)
+nfa.set_accept_state(3)
+
+# Test strings
+test_strings = ["42", "0", "123", "1_000", "0123"]
+for s in test_strings:
+    result = "Accepted" if nfa.is_accepted(s) else "Rejected"
+    print(f"String '{s}': {result}")
