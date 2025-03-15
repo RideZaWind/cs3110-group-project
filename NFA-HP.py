@@ -1,6 +1,7 @@
 # Adjacency list implementation
 
 from collections import defaultdict
+import string
 
 class NFA:
     def __init__(self):
@@ -11,7 +12,7 @@ class NFA:
 
     # every time transition is accessed with non-existant key, it will now automatically make one
     def add_transition(self, fromState, symbol, toState):
-        self.transitions[fromState][str(symbol)].add(toState)
+        self.transitions[fromState][str(symbol)].add(toState) # we must convert the symbol to string because numbers don't work
 
     def set_start_state(self, state):
         self.start_state = state
@@ -58,27 +59,67 @@ class NFA:
 
 # MAIN
 nfa = NFA()
-nfa.set_start_state(0)
+nfa.set_start_state("start")
 
 # Adding transitions
+# Decimals
 for i in range(9): # 0 to 8
-    nfa.add_transition(0, i + 1, 1)
+    nfa.add_transition("start", i + 1, "dec")
+
+nfa.add_transition("dec", "_", "_")
 
 for i in range(10): # 0 to 9
-    nfa.add_transition(1, i, 1)
-    nfa.add_transition(2, i, 1)
+    nfa.add_transition("dec", i, "dec")
+    nfa.add_transition("_", i, "dec")
 
-nfa.add_transition(1, "_", 2)
-nfa.add_transition(0, 0, 3)
-nfa.add_transition(3, 0, 3)
+# Octals/Hex/Zeroes
+nfa.add_transition("start", 0, "0")
+
+# Octals
+nfa.add_transition("0", "o", "oct")
+
+for i in range(8): # 0 to 7
+    nfa.add_transition("oct", i, "digit")
+    nfa.add_transition("digit", i, "digit")
+    nfa.add_transition("digit", i, "_")
+    nfa.add_transition("_", i, "digit")
+
+nfa.add_transition("oct", "_", "_")
+nfa.add_transition("digit", "_", "_")
+
+#Hexadecimals
+nfa.add_transition("0", "x", "hex")
+
+for i in range(10): # 0 to 9
+    nfa.add_transition("hex", i, "digit")
+    nfa.add_transition("digit", i, "digit")
+    nfa.add_transition("_", i, "digit")
+
+for char in string.ascii_lowercase:  # Contains "abcdefghijklmnopqrstuvwxyz"
+    nfa.add_transition("hex", char, "digit")
+    nfa.add_transition("digit", char, "digit")
+    nfa.add_transition("_", char, "digit")
+
+for char in string.ascii_uppercase:  # Contains "ABDEFGHIJKLMNOPQRSTUVWXYZ"
+    nfa.add_transition("hex", char, "digit")
+    nfa.add_transition("digit", char, "digit")
+    nfa.add_transition("_", char, "digit")
+
+nfa.add_transition("hex", "_", "_")
+nfa.add_transition("digit", "_", "_")
+
+# Zeroes
+nfa.add_transition("0", 0, "00")
+nfa.add_transition("00", 0, "00")
 
 # Set accept state(s)
-nfa.set_accept_state(1)
-nfa.set_accept_state(2)
-nfa.set_accept_state(3)
+nfa.set_accept_state("dec")
+nfa.set_accept_state("digit")
+nfa.set_accept_state("00")
+nfa.set_accept_state("0")
 
 # Test strings
-test_strings = ["42", "0", "123", "1_000", "0123"]
+test_strings = ["123", "0", "0x123ABC", "0o013", "0x1_2_3", "0o7_7_7", "00000", "Supercalifragilisticexpialidocious"]
 for s in test_strings:
     result = "Accepted" if nfa.is_accepted(s) else "Rejected"
     print(f"String '{s}': {result}")
