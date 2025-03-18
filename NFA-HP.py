@@ -124,6 +124,44 @@ nfa.set_accept_state("digitOct")
 nfa.set_accept_state("00")
 nfa.set_accept_state("0")
 
+#Floting point extra credit:
+
+# All transitions for Digits 0-9
+for i in range(10):
+    nfa.add_transition("start", i, "DigitBefore")
+    nfa.add_transition("DigitBefore", i, "DigitBefore")
+    nfa.add_transition("DecimalPoint", i, "DigitAfter")
+    nfa.add_transition("DigitAfter", i, "DigitAfter")
+    nfa.add_transition("UnderscoreHandling", i, "DigitAfter")
+    nfa.add_transition("e/E", i, "ExponentDigits")
+    nfa.add_transition("+/- after e/E", i, "ExponentDigits")
+    nfa.add_transition("ExponentDigits", i, "ExponentDigits")
+
+# Edge case: Valid integer ending with a decimal
+nfa.add_transition("DigitBefore", ".", "EdgeCase")
+
+# Other decimal point and underscore transitions
+nfa.add_transition("start", ".", "DecimalPoint")
+nfa.add_transition("DigitBefore", ".", "DecimalPoint")
+nfa.add_transition("DigitAfter", "_", "UnderscoreHandling")  # Underscore handling after decimal
+
+
+# Transtitions for exponent part (e/E)
+nfa.add_transition("DigitBefore", "e", "e/E")
+nfa.add_transition("DigitBefore", "E", "e/E")
+nfa.add_transition("DigitAfter", "e", "e/E")
+nfa.add_transition("DigitAfter", "E", "e/E")
+
+# Sign after exponent
+nfa.add_transition("e/E", "+", "+/- after e/E")
+nfa.add_transition("e/E", "-", "+/- after e/E")
+
+
+# Set accept states
+nfa.set_accept_state("DigitAfter")
+nfa.set_accept_state("ExponentDigits")
+nfa.set_accept_state("EdgeCase")
+
 # Test strings
 with open("in.txt", "r") as file:
     test_strings = file.readlines()
