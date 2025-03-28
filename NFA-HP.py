@@ -136,6 +136,8 @@ for i in range(10):
     nfa.add_transition("e/E", i, "ExponentDigits")
     nfa.add_transition("+/- after e/E", i, "ExponentDigits")
     nfa.add_transition("ExponentDigits", i, "ExponentDigits")
+    nfa.add_transition("UnderscoreHandling", i, "DigitBefore")
+    nfa.add_transition("UnderscoreHandling", i, "ExponentDigits")
 
 # Edge case: Valid integer ending with a decimal
 nfa.add_transition("DigitBefore", ".", "EdgeCase")
@@ -143,7 +145,9 @@ nfa.add_transition("DigitBefore", ".", "EdgeCase")
 # Other decimal point and underscore transitions
 nfa.add_transition("start", ".", "DecimalPoint")
 nfa.add_transition("DigitBefore", ".", "DecimalPoint")
-nfa.add_transition("DigitAfter", "_", "UnderscoreHandling")  # Underscore handling after decimal
+nfa.add_transition("DigitAfter", "_", "UnderscoreHandling")
+nfa.add_transition("DigitBefore", "_", "UnderscoreHandling")
+nfa.add_transition("ExponentDigits", "_", "UnderscoreHandling")
 
 
 # Transtitions for exponent part (e/E)

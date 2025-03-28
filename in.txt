@@ -30,11 +30,13 @@ Accepted_by_floating_point_literal_checker:
 1.
 .5
 123.456
+1_000.000_1
 1e10
 2E+5
 5e-3
 6.022E23
 .1e-2
+1_2.3_4E5_6
 Always_rejected:
 01
 0012
