@@ -2,6 +2,8 @@
 
 from collections import defaultdict
 import string
+import re
+
 
 class NFA:
     def __init__(self):
@@ -168,9 +170,27 @@ nfa.set_accept_state("EdgeCase")
 
 # Test strings
 with open("in.txt", "r") as file:
-    test_strings = file.readlines()
-    test_strings = [string.strip() for string in test_strings]
+    lines = file.readlines()
+    lines = [line.strip() for line in lines]
 
-for s in test_strings:
-    result = "Accepted" if nfa.is_accepted(s) else "Rejected"
-    print(f"String '{s}': {result}")
+i = 0
+while i < len(lines):
+    # Skip comment lines and blank lines
+    if lines[i].startswith('#') or lines[i] == '':
+        i += 1
+        continue
+
+    if i < len(lines):
+        # The first line is our test string
+        test_string = lines[i]
+        i += 1
+
+        # Next line should be the expected result
+        expected_result = lines[i] if i < len(lines) else None
+        i += 1
+
+        # Run the NFA on the test string
+        actual_result = "accepted" if nfa.is_accepted(test_string) else "rejected"
+
+        # Print the test string, expected result, and actual result
+        print(f"String: {test_string}\nExpected: {expected_result}\nActual: {actual_result}\n\n")
