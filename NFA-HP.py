@@ -2,7 +2,6 @@
 
 from collections import defaultdict
 import string
-import re
 
 
 class NFA:
