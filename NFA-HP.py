@@ -55,7 +55,39 @@ class NFA:
         return bool(currentStates & self.accept_states)
 
 
+def buildNFA():
+    userNFA = NFA()
 
+    userNFA.set_start_state("start")
+    print("Start state is set to \'start\'")
+    while True:
+        userInput = input("Input an NFA node separated by space, ie \"0 x hex\", otherwise 'end' to stop building:\n")
+
+        if userInput == "end":
+            while True:
+                userInput = input("Set an accept state, 'end' to stop: ")
+                userNFA.set_accept_state(userInput)
+
+                if userInput == "end":
+                    # I should make an NFA tree print function at some point
+                    while True:
+                        String = input("Input a test string, 'end' to stop: ")
+
+                        if String == "end":
+                            print("Testing complete.")
+                            exit()  # Exit the program
+
+                        result = "Accepted" if userNFA.is_accepted(String) else "Rejected"
+                        print(f"String '{String}': {result}")
+
+        parts = userInput.split()
+
+        if len(parts) != 3: # vanguard to make sure there's 3 inputs
+            print("Error: Please provide exactly 3 values separated by spaces.")
+            continue
+
+        userNFA.add_transition(parts[0], parts[1], parts[2])
+        print(f"Added transition: {parts[0]} --{parts[1]}--> {parts[2]}")
 
 
 # MAIN
@@ -207,35 +239,16 @@ if userInput == 'y':
                 print(output)
                 outfile.write(output)
 else:
-    userNFA = NFA()
+    userInput = input("Type y if you want to use the defined NFA, otherwise build your own: ")
 
-    userNFA.set_start_state("start")
-    print("Start state is set to \'start\'")
-    while True:
-        userInput = input("Input an NFA node separated by space, ie \"0 x hex\", otherwise 'end' to stop building:\n")
+    if userInput == 'y':
+        while True:
+            String = input("Input a test string, 'end' to stop: ")
 
-        if userInput == "end":
-            while True:
-                userInput = input("Set an accept state, 'end' to stop: ")
-                userNFA.set_accept_state(userInput)
-
-                if userInput == "end":
-                    # I should make an NFA tree print function at some point
-                    while True:
-                        String = input("Input a test string, 'end' to stop: ")
-
-                        if String == "end":
-                            print("Testing complete.")
-                            exit()  # Exit the program
-
-                        result = "Accepted" if userNFA.is_accepted(String) else "Rejected"
-                        print(f"String '{String}': {result}")
-
-        parts = userInput.split()
-
-        if len(parts) != 3: # vanguard to make sure there's 3 inputs
-            print("Error: Please provide exactly 3 values separated by spaces.")
-            continue
-
-        userNFA.add_transition(parts[0], parts[1], parts[2])
-        print(f"Added transition: {parts[0]} --{parts[1]}--> {parts[2]}")
+            if String == "end":
+                print("Testing complete.")
+                exit()  # Exit the program
+            result = "Accepted" if nfa.is_accepted(String) else "Rejected"
+            print(f"String '{String}': {result}")
+    else:
+        buildNFA()
