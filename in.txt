@@ -110,6 +110,9 @@ accepted
 1_2.3_4E5_6
 #Always_rejected:
 
+-123
+rejected
+
 01
 rejected
 
@@ -134,7 +137,12 @@ rejected
 0o123456789
 rejected
 
+-0o31337
+
 0xabcdefg
+rejected
+
+-0x1337
 rejected
 
 0XABCDEFG
@@ -168,6 +176,9 @@ _3.14
 rejected
 
 3_.14
+rejected
+
+-3.14
 rejected
 
 3._14
