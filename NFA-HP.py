@@ -168,29 +168,67 @@ nfa.set_accept_state("DigitAfter")
 nfa.set_accept_state("ExponentDigits")
 nfa.set_accept_state("EdgeCase")
 
-# Test strings
-with open("in.txt", "r") as file:
-    lines = file.readlines()
-    lines = [line.strip() for line in lines]
+########## DRIVER ###########
 
-i = 0
-while i < len(lines):
-    # Skip comment lines and blank lines
-    if lines[i].startswith('#') or lines[i] == '':
-        i += 1
-        continue
+# Interface
+userInput = input("Welcome to the NFA program. Type y if you're reading from a file: ")
 
-    if i < len(lines):
-        # The first line is our test string
-        test_string = lines[i]
-        i += 1
+if userInput == 'y':
+    inFile  = input("Type the input file name: ")
+    outFile = input("Type the output file name: ")
 
-        # Next line should be the expected result
-        expected_result = lines[i] if i < len(lines) else None
-        i += 1
+    with open(inFile, "r") as file:
+        lines = file.readlines()
+        lines = [line.strip() for line in lines]
 
-        # Run the NFA on the test string
-        actual_result = "accepted" if nfa.is_accepted(test_string) else "rejected"
+    with open(outFile, "w") as outfile:
+        i = 0
+        while i < len(lines):
+            # Skip comment lines and blank lines
+            if lines[i].startswith('#') or lines[i] == '':
+                i += 1
+                continue
 
-        # Print the test string, expected result, and actual result
-        print(f"String: {test_string}\nExpected: {expected_result}\nActual: {actual_result}\n\n")
+            if i < len(lines):
+                # The first line is our test string
+                testString = lines[i]
+                i += 1
+
+                # Next line should be the expected result
+                expectedResult = lines[i] if i < len(lines) else None
+                i += 1
+
+                # Run the NFA on the test string
+                actualResult = "accepted" if nfa.is_accepted(testString) else "rejected"
+
+                # Store the output to print on both terminal and file
+                output = f"String: {testString}\nExpected: {expectedResult}\nActual: {actualResult}\n\n"
+
+                # Print
+                print(output)
+                outfile.write(output)
+else:
+    userNFA = NFA()
+    while True:
+        userInput = input("Input an NFA node separated by space, ie \"0 x hex\", otherwise 'end' to stop building:\n")
+
+        if userInput == "end":
+            # I should make an NFA tree print function at some point
+            while True:
+                String = input("Input a test string, otherwise 'end' to stop:\n")
+
+                if String == "end":
+                    print("Testing complete.")
+                    break  # Exit the testing loop
+
+                result = "Accepted" if userNFA.is_accepted(String) else "Rejected"
+                print(f"String '{String}': {result}")
+
+        parts = userInput.split()
+
+        if len(parts) != 3: # vanguard to make sure there's 3 inputs
+            print("Error: Please provide exactly 3 values separated by spaces.")
+            continue
+
+        userNFA.add_transition(parts[0], parts[1], parts[2])
+        print(f"Added transition: {parts[0]} --{parts[1]}--> {parts[2]}")
