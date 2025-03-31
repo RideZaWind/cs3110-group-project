@@ -209,20 +209,28 @@ if userInput == 'y':
                 outfile.write(output)
 else:
     userNFA = NFA()
+
+    userNFA.set_start_state("start")
+    print("Start state is set to \'start\'")
     while True:
         userInput = input("Input an NFA node separated by space, ie \"0 x hex\", otherwise 'end' to stop building:\n")
 
         if userInput == "end":
-            # I should make an NFA tree print function at some point
             while True:
-                String = input("Input a test string, otherwise 'end' to stop:\n")
+                userInput = input("Set an accept state, 'end' to stop: ")
+                userNFA.set_accept_state(userInput)
 
-                if String == "end":
-                    print("Testing complete.")
-                    break  # Exit the testing loop
+                if userInput == "end":
+                    # I should make an NFA tree print function at some point
+                    while True:
+                        String = input("Input a test string, 'end' to stop: ")
 
-                result = "Accepted" if userNFA.is_accepted(String) else "Rejected"
-                print(f"String '{String}': {result}")
+                        if String == "end":
+                            print("Testing complete.")
+                            exit()  # Exit the program
+
+                        result = "Accepted" if userNFA.is_accepted(String) else "Rejected"
+                        print(f"String '{String}': {result}")
 
         parts = userInput.split()
 
