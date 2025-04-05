@@ -22,7 +22,7 @@ class NFA:
         self.accept_states.add(state)
 
     # we must also make sure to take in account of states reachable by epsilon ε
-    # we don't need the epsilon nodes, those are bullshit, give me the next meaniful node so I can check the symbol with.
+    # we don't need the epsilon nodes, give me the next meaniful node so I can check the symbol with.
     # return the current states after traversing through all available epsilons
     def epsilon_traversal(self, states):
         stack = list(states) # why list? at some point we will call this with a number of current arguments (imagine traversing each line of a tree)
@@ -165,22 +165,24 @@ for i in range(10):
     nfa.add_transition("DigitBefore", i, "DigitBefore")
     nfa.add_transition("DecimalPoint", i, "DigitAfter")
     nfa.add_transition("DigitAfter", i, "DigitAfter")
-    nfa.add_transition("UnderscoreHandling", i, "DigitAfter")
+    nfa.add_transition("UnderscoreAfter", i, "DigitAfter")
     nfa.add_transition("e/E", i, "ExponentDigits")
     nfa.add_transition("+/- after e/E", i, "ExponentDigits")
     nfa.add_transition("ExponentDigits", i, "ExponentDigits")
-    nfa.add_transition("UnderscoreHandling", i, "DigitBefore")
-    nfa.add_transition("UnderscoreHandling", i, "ExponentDigits")
+    nfa.add_transition("UnderscoreBefore", i, "DigitBefore")
+    nfa.add_transition("UnderscoreExponent", i, "ExponentDigits")
 
 # Edge case: Valid integer ending with a decimal
 nfa.add_transition("DigitBefore", ".", "EdgeCase")
+nfa.add_transition("EdgeCase", "e", "e/E")
+nfa.add_transition("EdgeCase", "E", "e/E")
 
 # Other decimal point and underscore transitions
 nfa.add_transition("start", ".", "DecimalPoint")
 nfa.add_transition("DigitBefore", ".", "DecimalPoint")
-nfa.add_transition("DigitAfter", "_", "UnderscoreHandling")
-nfa.add_transition("DigitBefore", "_", "UnderscoreHandling")
-nfa.add_transition("ExponentDigits", "_", "UnderscoreHandling")
+nfa.add_transition("DigitAfter", "_", "UnderscoreAfter")
+nfa.add_transition("DigitBefore", "_", "UnderscoreBefore")
+nfa.add_transition("ExponentDigits", "_", "UnderscoreExponent")
 
 
 # Transtitions for exponent part (e/E)
