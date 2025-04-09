@@ -29,6 +29,8 @@ Welcome to the NFA program. Type y if you're reading from a file: n
 Type y if you want to use the defined NFA, otherwise build your own: y
 Input a test string, 'end' to stop: 123456
 String 123456: Accepted
+Input a test string, 'end' to stop: end
+Testing complete.
 
 Welcome to the NFA program. Type y if you're reading from a file: n
 Type y if you want to use the defined NFA, otherwise build your own: n
