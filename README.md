@@ -18,6 +18,7 @@ Construct an NFA to recognize the Python nuymerical literals
 * BONUS: Able to construct your own NFA
 
 ## Example
+run NFA-HP.py
 ```
 Welcome to the NFA program. Type y if you're reading from a file: y
 Type the input file name: input.txt
