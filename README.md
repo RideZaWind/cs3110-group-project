@@ -8,7 +8,7 @@ Construct an NFA to recognize the Python nuymerical literals
 * Python floating point literals
 
 ## Contributors
-* Huy Pham (GHPHAM) - Integrate, QA
+* Huy Pham (GHPHAM) - Program, Integrate, QA
 * Adrian Alcoreza (RideZaWind) - NFA design
 * Daniel Castillo (DanielCastillo7) - NFA extra credit design
 
